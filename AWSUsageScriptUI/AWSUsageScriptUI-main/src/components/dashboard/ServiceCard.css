@@ -1,0 +1,375 @@
+/* ServiceCard Styles */
+.service-card {
+    position: relative;
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+  
+  .service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  }
+  
+  .service-card.clickable {
+    cursor: pointer;
+  }
+  
+  .service-card.clickable:hover {
+    border-color: #667eea;
+  }
+  
+  .service-card.clickable:focus {
+    outline: none;
+    ring: 2px solid #667eea;
+    ring-offset: 2px;
+  }
+  
+  /* Status-based card styling */
+  .service-card.healthy {
+    border-left: 4px solid #48bb78;
+  }
+  
+  .service-card.warning {
+    border-left: 4px solid #ed8936;
+  }
+  
+  .service-card.error {
+    border-left: 4px solid #f56565;
+  }
+  
+  .service-card.inactive {
+    border-left: 4px solid #a0aec0;
+  }
+  
+  /* Card Header */
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    gap: 16px;
+  }
+  
+  .service-icon-container {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f7fafc, #edf2f7);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  .service-icon {
+    font-size: 24px;
+    line-height: 1;
+  }
+  
+  .card-title-section {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .card-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0 0 8px 0;
+    line-height: 1.3;
+  }
+  
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  
+  /* Trend Indicator */
+  .trend-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  
+  .trend-indicator.up {
+    color: #48bb78;
+  }
+  
+  .trend-indicator.down {
+    color: #f56565;
+  }
+  
+  .trend-indicator.stable {
+    color: #718096;
+  }
+  
+  .trend-arrow {
+    font-size: 14px;
+  }
+  
+  .trend-percentage {
+    font-size: 11px;
+  }
+  
+  /* Card Content */
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .count-section {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  
+  .count {
+    font-size: 36px;
+    font-weight: 700;
+    color: #2d3748;
+    line-height: 1;
+  }
+  
+  .count-label {
+    font-size: 14px;
+    color: #718096;
+    font-weight: 500;
+  }
+  
+  .details-section {
+    flex: 1;
+  }
+  
+  .details {
+    color: #718096;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+  }
+  
+  /* Action Indicator */
+  .action-indicator {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  
+  .service-card.clickable:hover .action-indicator {
+    opacity: 1;
+  }
+  
+  .action-arrow {
+    font-size: 16px;
+    color: #667eea;
+    font-weight: bold;
+  }
+  
+  /* Status Badge */
+  .status-badge {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: white;
+    font-weight: bold;
+    border: 2px solid white;
+  }
+  
+  .status-badge.healthy {
+    background: #48bb78;
+  }
+  
+  .status-badge.warning {
+    background: #ed8936;
+  }
+  
+  .status-badge.error {
+    background: #f56565;
+  }
+  
+  .status-badge.inactive {
+    background: #a0aec0;
+  }
+  
+  /* Loading State */
+  .service-card.loading {
+    pointer-events: none;
+  }
+  
+  .card-skeleton {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .skeleton-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .skeleton-icon {
+    width: 48px;
+    height: 48px;
+    background: #e2e8f0;
+    border-radius: 12px;
+  }
+  
+  .skeleton-title {
+    width: 120px;
+    height: 20px;
+    background: #e2e8f0;
+    border-radius: 4px;
+  }
+  
+  .skeleton-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .skeleton-count {
+    width: 80px;
+    height: 40px;
+    background: #e2e8f0;
+    border-radius: 4px;
+  }
+  
+  .skeleton-details {
+    width: 100%;
+    height: 16px;
+    background: #e2e8f0;
+    border-radius: 4px;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .service-card {
+      padding: 20px;
+    }
+    
+    .card-header {
+      gap: 12px;
+    }
+    
+    .service-icon-container {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .service-icon {
+      font-size: 20px;
+    }
+    
+    .card-title {
+      font-size: 16px;
+    }
+    
+    .count {
+      font-size: 32px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .service-card {
+      padding: 16px;
+    }
+    
+    .count {
+      font-size: 28px;
+    }
+    
+    .card-title {
+      font-size: 15px;
+    }
+  }
+  
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    .service-card {
+      background: #2d3748;
+      border-color: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+    
+    .card-title {
+      color: white;
+    }
+    
+    .count {
+      color: white;
+    }
+    
+    .service-icon-container {
+      background: linear-gradient(135deg, #4a5568, #2d3748);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .skeleton-icon,
+    .skeleton-title,
+    .skeleton-count,
+    .skeleton-details {
+      background: #4a5568;
+    }
+  }
+  
+  /* Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .service-card {
+      transition: none;
+    }
+    
+    .service-card:hover {
+      transform: none;
+    }
+    
+    .card-skeleton {
+      animation: none;
+    }
+  }
+  
+  /* Print styles */
+  @media print {
+    .service-card {
+      break-inside: avoid;
+      box-shadow: none;
+      border: 1px solid #ccc;
+    }
+    
+    .action-indicator,
+    .status-badge {
+      display: none;
+    }
+  }
