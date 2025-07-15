@@ -36,7 +36,7 @@ REM ===========================
 REM RUN BACKEND IN NEW TERMINAL
 REM ===========================
 echo === Starting backend (FastAPI) in new terminal ===
-start cmd /k "cd AWSUsageScript && call venv\Scripts\activate && fastapi dev usageScript.py"
+start cmd /k "cd AWSUsageScript && call venv\Scripts\activate && fastapi dev usageScript.py --port 8000"
 
 REM ===========================
 REM RUN FRONTEND IN NEW TERMINAL

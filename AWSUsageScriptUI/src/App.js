@@ -11,6 +11,12 @@ import awsResourceApi from './api/apiService.js'
 // Base URL
 const API_BASE_URL = process.env.API_BASE_URL ?? "http://127.0.0.1:8000/api"
 
+const discoverBackendURL = async () => {
+  const possibleUrls = [
+    'http://127.0.0.1:8000/api',
+    'http://localhost:8000/api'
+  ];
+}
 function App() {
   const [activeTab, setActiveTab] = useState('overview');
   
