@@ -92,8 +92,8 @@ function App() {
         if(healthResponse.data.success) {
           // Stop the timer
           const end = Date.now();
-          if(end - start < 1000) {
-            const diff = 1000 - (end - start);
+          if(end - start < 1500) {
+            const diff = 1500 - (end - start);
 
             setTimeout(() => setHealthStatus('healthy'), diff + (end - start));
           }
@@ -176,7 +176,7 @@ function App() {
       </div>
     )
   }
-  
+
   return (
     <div className="App">
       {/* Header */}
