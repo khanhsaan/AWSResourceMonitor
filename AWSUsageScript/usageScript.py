@@ -37,6 +37,7 @@ async def aws_health():
             'success': False,
             'message': f'Backend is NOT accessible: {e}'
         }
+        
 @app.post('/configure')
 async def aws_configure(credentials: AWSCredentials):
     try:

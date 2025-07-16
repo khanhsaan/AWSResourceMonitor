@@ -1,27 +1,42 @@
 import { useEffect } from "react";
 
-const API_BASE_URL = "";
+let API_BASE_URL = "";
 
 const possibleURLs = [
+    "http://localhost:8000/api",
     "http://0.0.0.0:8000/api",
-    "http://localhost:8000/api"
 ]
 
 const findURL = async () => {
     let check = false;
 
     for(const url of possibleURLs){
-        const response = await apiCall(url, '/health');
+        try {
+            const response = await apiCall(url, '/health');
 
-        if(response.success){
-            console.log(`FOUND right URL: ${url}`);
-            API_BASE_URL = url;
-            check = true;
-            break;
+            if(response.data && response.data.success){
+                console.log(`FOUND right URL: ${url}`);
+                API_BASE_URL = url;
+                check = true;
+
+                return {
+                    data: response.data,
+                    error: null,
+                }
+            } else if (response.error) {
+                throw new Error();
+            }
+        } catch (err) {
+            console.log(`Failed to connect to ${url}, continue to the next URL`);
         }
     }
-    if(!check){
+    if(!check) {
         console.log(`CANNOT find backend URL, check the initiation of backend`);
+
+        return {
+            data: null,
+            error: "CANNOT find backend URL, check the initiation of backend",
+        }
     }
 }
 
@@ -68,13 +83,13 @@ const authcall = async(endpoint, credentials) => {
             'Content-Type': 'application/json',
         },
         // Specify the method: POST
-        method: 'POST',
+        method: 'POST', 
         // JSON format the passed credentials
         body: JSON.stringify(credentials)
     };
 
     // Pass the endpoint and option to apiCall()
-    return await apiCall(endpoint, options);
+    return await apiCall(API_BASE_URL, endpoint, options);
 }
 
 const awsResourceApi = {
@@ -103,47 +118,47 @@ const awsResourceApi = {
 
     // get current region
     getAWSRegion: async () => {
-        return await apiCall('/region')
+        return await apiCall(API_BASE_URL, '/region')
     },
 
     // get AWS Cost
     getAWSCosts: async () => {
-        return await apiCall('/costs')
+        return await apiCall(API_BASE_URL,'/costs')
     },
 
     // Get EC2 instances
     getRDS: async () => {
-        return await apiCall('/rds');
+        return await apiCall(API_BASE_URL,'/rds');
     },
 
     // Get RDS
     getS3: async () => {
-        return await apiCall('/s3');
+        return await apiCall(API_BASE_URL,'/s3');
     },
 
     // Get Lambda
     getLambda: async () => {
-        return await apiCall('/lambda');
+        return await apiCall(API_BASE_URL,'/lambda');
     },
 
     // Get load balancers
     getELB: async () => {
-        return await apiCall('/elb');
+        return await apiCall(API_BASE_URL,'/elb');
     },
 
     // Get EC2
     getEC2: async () => {
-        return await apiCall('/ec2');
+        return await apiCall(API_BASE_URL,'/ec2');
     },
 
     // Get EBS
     getEBS: async () => {
-        return await apiCall('/ebs');
+        return await apiCall(API_BASE_URL,'/ebs');
     },
 
     // Get Elastic IPs
     getEIP: async () => {
-        return await apiCall('/eip');
+        return await apiCall(API_BASE_URL,'/eip');
     }
 }   
 export { findURL };

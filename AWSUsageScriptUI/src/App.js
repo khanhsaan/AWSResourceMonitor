@@ -6,17 +6,8 @@ import ServiceDetail from './components/ServiceDetails.js'
 import CostBar from './components/CostBar.js'
 import useMockOrRealData from './api/useMockOrRealData.js';
 import LoginForm from './components/login/LoginForm.js';
-import awsResourceApi from './api/apiService.js'
+import awsResourceApi, { findURL } from './api/apiService.js';
 
-// Base URL
-const API_BASE_URL = process.env.API_BASE_URL ?? "http://127.0.0.1:8000/api"
-
-const discoverBackendURL = async () => {
-  const possibleUrls = [
-    'http://127.0.0.1:8000/api',
-    'http://localhost:8000/api'
-  ];
-}
 function App() {
   const [activeTab, setActiveTab] = useState('overview');
   
@@ -26,7 +17,7 @@ function App() {
   const[isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Health check
-  const[isHealthy, setIsHealthy] = useState(false);
+  const[healthStatus, setHealthStatus] = useState('checking');
 
   // Retrieve the values from useMockOrRealData.js
   const[regionData, errorRegion, ec2Data, errorEC2, rdsData, errorRDS, costData, errorCost, s3Data, errorsS3,lambdaData, errorLambda, loadBalancersData, errorLoadBalancers, EBSData, errorEBS, EIPsData, errorEIPs, isLoading] = useMockOrRealData(isAuthenticated);
@@ -82,6 +73,85 @@ function App() {
     console.log('User logged out successfully!');
   }
 
+  const checkHealthy = async() => {
+    // Start the timer
+    const start = Date.now();
+
+    setHealthStatus('checking');
+    try {
+      const healthResponse = await findURL();
+
+      if(healthResponse.error) {
+        console.error("There is error: ", healthResponse.error);
+        setHealthStatus('error');
+      }
+
+      if(healthResponse.data) {
+        console.log("There is health response BEING retrieved!");
+
+        if(healthResponse.data.success) {
+          // Stop the timer
+          const end = Date.now();
+          if(end - start < 1000) {
+            const diff = 1000 - (end - start);
+
+            setTimeout(() => setHealthStatus('healthy'), diff + (end - start));
+          }
+        } else {
+          setHealthStatus('error');
+        }
+      }
+      
+    } catch (err) {
+      console.error("There is NO health response: ", err);
+      setHealthStatus('error');
+    }
+  }
+
+  const retryHealthCheck = () => {
+    checkHealthy();
+  }
+
+  useEffect(() => {
+    checkHealthy()
+  }, []);
+
+  // HEALTH CHECK
+  if(healthStatus === 'checking') {
+    return (
+      <div className='loading-screen'>
+      <div className='loading-spinner'></div>
+        <p>Checking backend health ...</p>
+      </div>
+    )
+  }
+
+  if(healthStatus === 'error') {
+    return (
+      <div className='error-screen'>
+        <div className='error-container'>
+          <div className='error-icon'>⚠️</div>
+          <h2>Backend Not Accessible</h2>
+          <p>Unable to connect to the backend service.</p>
+          <div className='error-instructions'></div>
+          <h3>Please check the backend state:</h3>
+          <ul>
+            <li>Ensure the backend server is running</li>
+            <li>Check if the backend port is accessible</li>
+            <li>Verify network connectivity</li>
+          </ul>
+        </div>
+        <div className='error-actions'>
+          <button
+            className='retry-btn'
+            onClick={retryHealthCheck}>
+              🔄 Retry Connection
+            </button>
+        </div>
+      </div>
+    )
+  }
+
   // LOGIN STATE
   if(!isAuthenticated) {
     return <LoginForm 
@@ -109,7 +179,6 @@ function App() {
   // if(errorEC2 || ec2Data){
   //   console.log("Error getting EC2 instances or ")
   // }
-
   return (
     <div className="App">
       {/* Header */}

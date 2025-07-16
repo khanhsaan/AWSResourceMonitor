@@ -584,3 +584,124 @@ body {
     padding: 6px 12px;
   }
 }
+
+/* Error Screen */
+.error-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+}
+
+.error-container {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 40px;
+  max-width: 600px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.error-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.error-container h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+  color: #ffeb3b;
+}
+
+.error-container > p {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+  opacity: 0.9;
+}
+
+.error-instructions {
+  text-align: left;
+  margin-bottom: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.error-instructions h3 {
+  color: #ffeb3b;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.error-instructions ul {
+  list-style: none;
+  padding: 0;
+}
+
+.error-instructions li {
+  padding: 8px 0;
+  padding-left: 25px;
+  position: relative;
+}
+
+.error-instructions li:before {
+  content: "•";
+  color: #ffeb3b;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+.error-actions {
+  text-align: center;
+}
+
+.retry-btn {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  font-size: 1rem;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.retry-btn:hover {
+  background: linear-gradient(135deg, #45a049, #4CAF50);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+.retry-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive design for error screen */
+@media (max-width: 768px) {
+  .error-container {
+    padding: 30px 20px;
+    margin: 20px;
+  }
+  
+  .error-container h2 {
+    font-size: 1.5rem;
+  }
+  
+  .error-icon {
+    font-size: 3rem;
+  }
+}
