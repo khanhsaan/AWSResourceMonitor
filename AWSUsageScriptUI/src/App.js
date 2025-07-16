@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import { act, useEffect, useState } from 'react';
+import { act, use, useEffect, useState } from 'react';
 import mockData from './constants/MockData';
 import ServiceDetail from './components/ServiceDetails.js'
 import CostBar from './components/CostBar.js'
@@ -24,6 +24,9 @@ function App() {
 
   // Authenticate state
   const[isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Health check
+  const[isHealthy, setIsHealthy] = useState(false);
 
   // Retrieve the values from useMockOrRealData.js
   const[regionData, errorRegion, ec2Data, errorEC2, rdsData, errorRDS, costData, errorCost, s3Data, errorsS3,lambdaData, errorLambda, loadBalancersData, errorLoadBalancers, EBSData, errorEBS, EIPsData, errorEIPs, isLoading] = useMockOrRealData(isAuthenticated);

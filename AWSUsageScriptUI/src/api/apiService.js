@@ -1,13 +1,33 @@
-const API_BASE_URL = process.env.API_BASE_URL;
+import { useEffect } from "react";
+
+const API_BASE_URL = "";
 
 const possibleURLs = [
     "http://0.0.0.0:8000/api",
     "http://localhost:8000/api"
 ]
 
-const apiCall = async(endpoint, options = {}) => {
+const findURL = async () => {
+    let check = false;
+
+    for(const url of possibleURLs){
+        const response = await apiCall(url, '/health');
+
+        if(response.success){
+            console.log(`FOUND right URL: ${url}`);
+            API_BASE_URL = url;
+            check = true;
+            break;
+        }
+    }
+    if(!check){
+        console.log(`CANNOT find backend URL, check the initiation of backend`);
+    }
+}
+
+const apiCall = async(baseURL = API_BASE_URL, endpoint, options = {}) => {
     try{
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        const response = await fetch(`${baseURL}${endpoint}`, {
             headers: {
                 // Ensures the request specifies it is sending/expecting JSON data.
                 'Content-Type': 'application/json',
@@ -80,8 +100,6 @@ const awsResourceApi = {
         });
     },
 
-    // health check
-    
 
     // get current region
     getAWSRegion: async () => {
@@ -128,5 +146,5 @@ const awsResourceApi = {
         return await apiCall('/eip');
     }
 }   
-
+export { findURL };
 export default awsResourceApi;
