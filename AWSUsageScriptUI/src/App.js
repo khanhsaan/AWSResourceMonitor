@@ -133,20 +133,21 @@ function App() {
           <div className='error-icon'>⚠️</div>
           <h2>Backend Not Accessible</h2>
           <p>Unable to connect to the backend service.</p>
-          <div className='error-instructions'></div>
-          <h3>Please check the backend state:</h3>
-          <ul>
-            <li>Ensure the backend server is running</li>
-            <li>Check if the backend port is accessible</li>
-            <li>Verify network connectivity</li>
-          </ul>
-        </div>
-        <div className='error-actions'>
-          <button
-            className='retry-btn'
-            onClick={retryHealthCheck}>
-              🔄 Retry Connection
-            </button>
+          <div className='error-instructions'>
+            <h3>Please check the backend state:</h3>
+            <ul>
+              <li>Ensure the backend server is running</li>
+              <li>Check if the backend port is accessible</li>
+              <li>Verify network connectivity</li>
+            </ul>
+            <div className='error-actions'>
+              <button
+                className='retry-btn'
+                onClick={retryHealthCheck}>
+                  🔄 Retry Connection
+                </button>
+            </div>
+          </div>
         </div>
       </div>
     )
