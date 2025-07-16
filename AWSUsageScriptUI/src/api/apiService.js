@@ -1,4 +1,9 @@
-const API_BASE_URL = process.env.API_BASE_URL ?? "http://127.0.0.1:8000/api";
+const API_BASE_URL = process.env.API_BASE_URL;
+
+const possibleURLs = [
+    "http://0.0.0.0:8000/api",
+    "http://localhost:8000/api"
+]
 
 const apiCall = async(endpoint, options = {}) => {
     try{
@@ -74,6 +79,9 @@ const awsResourceApi = {
             region
         });
     },
+
+    // health check
+    
 
     // get current region
     getAWSRegion: async () => {

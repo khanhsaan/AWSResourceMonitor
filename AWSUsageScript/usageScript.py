@@ -25,6 +25,18 @@ class AWSCredentials(BaseModel):
     secret_access_key: str
     region: str = "ap-southeast-2"
 
+@app.get('/health')
+async def aws_health():
+    try:
+        return {
+            'success': True,
+            'message': f'Backend is accessible!'
+        }
+    except Exception as e:
+        return {
+            'success': False,
+            'message': f'Backend is NOT accessible: {e}'
+        }
 @app.post('/configure')
 async def aws_configure(credentials: AWSCredentials):
     try:
