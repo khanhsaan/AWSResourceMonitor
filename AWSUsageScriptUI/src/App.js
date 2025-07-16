@@ -176,10 +176,7 @@ function App() {
       </div>
     )
   }
-
-  // if(errorEC2 || ec2Data){
-  //   console.log("Error getting EC2 instances or ")
-  // }
+  
   return (
     <div className="App">
       {/* Header */}
