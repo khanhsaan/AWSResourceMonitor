@@ -1,15 +1,27 @@
 import boto3
 from datetime import datetime, timedelta
 from botocore.exceptions import ClientError
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 import subprocess
 import os
+from jose import JWTError, jwt
+import secrets
 
 app = FastAPI()
 
 app = FastAPI(root_path="/api")
+
+# JWT Configuration
+SECRET_KEY = secrets.token_urlsafe(32)
+ALGORITHM = 'HS256'
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+# Security scheme
+# “I expect clients to send an Authorization: Bearer <token> header with requests.”
+security = HTTPBearer()
 
 # Enable CORS
 app.add_middleware(
@@ -24,6 +36,17 @@ class AWSCredentials(BaseModel):
     access_key: str
     secret_access_key: str
     region: str = "ap-southeast-2"
+    
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+    expires_in: int
+    account_id: str
+    region: str
+    
+# JWT helper
+def create_access_token(data: dict, expires_delta: timedelta = None):
+    to_encode = data.copy()
 
 @app.get('/health')
 async def aws_health():
