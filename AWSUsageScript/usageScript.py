@@ -46,7 +46,28 @@ class Token(BaseModel):
     
 # JWT helper
 def create_access_token(data: dict, expires_delta: timedelta = None):
-    to_encode = data.copy()
+    try:
+        to_encode = data.copy() # copy passed data
+        
+        if expires_delta:
+            expire = datetime.now() + expires_delta
+        else:
+            expire = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            
+        to_encode.update({"exp": expire})
+        encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+        
+        return {
+            'success': True,
+            'message': 'Create JWT Token SUCCESSFULLY!',
+            'encoded_jwt': encoded_jwt
+        }
+    except Exception as e:
+        return {
+            'success': False,
+            'message': 'Create JWT Token UNSUCCESSFULLY',
+            'encoded_jwt': None
+        }
 
 @app.get('/health')
 async def aws_health():
