@@ -68,7 +68,29 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
             'message': 'Create JWT Token UNSUCCESSFULLY',
             'encoded_jwt': None
         }
-
+        
+def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    try:
+        payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
+        account_id: str = payload.get("account_id")
+        region: str = payload.get("region")
+        
+        if account_id is None:
+            raise HTTPException(
+                status_code = status.HTTP_401_UNAUTHORISED,
+                detail = "Invalid authentication credentials",
+                headers = {"WWW-Authenticate": "Bearer"},
+            )
+            
+        return {"account_id": account_id, "region": region}
+    
+    except JWTError:
+        raise HTTPException(
+            status_code = status.HTTP_401_UNAUTHORISED,
+            detail = "Invalid authentication credentials",
+            headers = {"WWW-Authenticate": "Bearer"},
+        )
+        
 @app.get('/health')
 async def aws_health():
     try:
@@ -82,7 +104,7 @@ async def aws_health():
             'message': f'Backend is NOT accessible: {e}'
         }
         
-@app.post('/configure')
+@app.post('/configure', response_model=Token)
 async def aws_configure(credentials: AWSCredentials):
     try:
         print(f"--- COFIGURING AWS CREDENTIALS ---")
@@ -112,16 +134,28 @@ async def aws_configure(credentials: AWSCredentials):
         os.environ['AWS_SECRET_ACCESS_KEY'] = credentials.secret_access_key
         os.environ['AWS_DEFAULT_REGION'] = credentials.region
         
+        # Create JWT Token once authenthication has been passed
+        print(f"----- Creating JWT Token")
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={
+                "account_id": identity.get('Account'),
+                "region": credentials.region,
+                "user_arn": identity.get('Arn'),
+            },
+            expires_delta=access_token_expires
+        )
+        
         # If there is no exception has been caught, print the message of success
         print(f"AWS credentials configured sucessfully!")
         
-        return {
-            "success": True,
-            "message": "AWS credentials configured sucessfully!",
-            "account_id": identity.get('Account'),
-            "user_arn": identity.get('Arn'),
-            "region": credentials.region 
-        }
+        return Token(
+            access_token=access_token,
+            token_type="bearer",
+            expires_in = ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+            account_id=identity.get('Account'),
+            region=credentials.region
+        )
     
     # Raise any exception if there is or has been raised by configure_aws_cli()
     except ClientError as e:
@@ -175,7 +209,7 @@ async def root():
     return {"message": "Hello word"}
 
 @app.get("/region")
-async def check_current_region():
+async def aws_get_region(current_user: dict = Depends(verify_token)):
     try:
         session = boto3.Session()
         current_region = session.region_name
