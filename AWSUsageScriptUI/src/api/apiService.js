@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-
+import {getAuthToken, setAuthToken, clearAuthToken} from "../../JWT/jwtService.js"
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry.js";
 let API_BASE_URL = "";
 
 const possibleURLs = [
@@ -40,27 +41,43 @@ const findURL = async () => {
     }
 }
 
+
 const apiCall = async(baseURL = API_BASE_URL, endpoint, options = {}) => {
     try{
-        const response = await fetch(`${baseURL}${endpoint}`, {
-            headers: {
-                // Ensures the request specifies it is sending/expecting JSON data.
-                'Content-Type': 'application/json',
+        const token = getAuthToken();
 
-                // Allows the caller to add or override headers via the options.headers object.
-                ...options.headers,
-            },
-            // Spreads any other custom request configurations (like method, body, credentials, etc.) into the fetch call.
+        const headers = {
+            // Ensures the request specifies it is sending/expecting JSON data.
+            'Content-Type': 'application/json',
+
+            // Allows the caller to add or override headers via the options.headers object.
+            ...options.headers,
+        };
+
+        // Add token to the headers
+        if(token && endpoint !== '/health' && endpoint !== '/configure'){
+            headers['Authorization'] = `Bearer ${token}`
+        }
+
+        const repsonse = await fetch(`${baseURL}${endpoint}`, {
+            headers,
             ...options,
-        });
+        })
 
-        if(!response.ok) {
+        if(response.status === 401){
+            clearAuthToken();
+            // Trigger re-authentication in your app
+            window.dispatchEvent(new CustomEvent('tokenExpired'));
+            throw new Error('Authentication expired');
+        }
+
+        if(!repsonse.ok){
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
         
-        // Debug
+        // Debug    
         // console.log(data);
 
         return {
@@ -83,7 +100,7 @@ const authcall = async(endpoint, credentials) => {
             'Content-Type': 'application/json',
         },
         // Specify the method: POST
-        method: 'POST', 
+        method: 'POST',
         // JSON format the passed credentials
         body: JSON.stringify(credentials)
     };
