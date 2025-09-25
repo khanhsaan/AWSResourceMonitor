@@ -118,7 +118,7 @@ const awsResourceApi = {
         // Validate the credentials
         if(!access_key || !secret_access_key || !region) {
             return {
-                data: null,
+                data: null, 
                 // raise error
                 error: 'Missing required credentials: access_key, secret_access_key, and region are all required'
             }
