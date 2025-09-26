@@ -60,7 +60,7 @@ const useMockOrRealData = (isAuthenticated = false) => {
     const[isLoading, setIsLoading] = useState(true);
 
     const fetchAWSData = async () => {
-        const FORCE_MOCK_TESTING = true; // Set to false to disable testing
+        const FORCE_MOCK_TESTING = false; // Set to false to disable testing
     
         if (FORCE_MOCK_TESTING) {
             console.log('🧪 TESTING MODE: Forcing some services to use mock data');
