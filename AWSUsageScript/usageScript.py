@@ -77,7 +77,7 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
         
         if account_id is None:
             raise HTTPException(
-                status_code = status.HTTP_401_UNAUTHORISED,
+                status_code = status.HTTP_401_UNAUTHORIZED,
                 detail = "Invalid authentication credentials",
                 headers = {"WWW-Authenticate": "Bearer"},
             )
@@ -86,7 +86,7 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
     
     except JWTError:
         raise HTTPException(
-            status_code = status.HTTP_401_UNAUTHORISED,
+            status_code = status.HTTP_401_UNAUTHORIZED,
             detail = "Invalid authentication credentials",
             headers = {"WWW-Authenticate": "Bearer"},
         )
@@ -154,7 +154,7 @@ async def aws_configure(credentials: AWSCredentials):
         return {
             "success": True,
             "message": f"Authentication SUCCESSFULLY!",
-            "data": {
+            "token": {
                 "access_token": access_token,
                 "token_type": "bearer",
                 "expires_in": ACCESS_TOKEN_EXPIRE_MINUTES * 60,
