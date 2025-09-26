@@ -6,38 +6,55 @@ const useMockOrRealData = (isAuthenticated = false) => {
     // const[data, setData] = useState(null);
     // Region
     const[regionData, setRegionData] = useState(null);
+    const[isRegionDataMock, setIsRegionDataMock] = useState(false);
     const[errorRegion, setErrorRegion] = useState(null);
     // Cost
     const[costData, setCostData] = useState(null);
     const[errorCost, setErrorCost] = useState(null);
+    const[isCostDataMock, setIsCostDataMock] = useState(false);
+
 
     // EC2
     const[ec2Data, setEC2Data] = useState(null);
     const[errorEC2, setErrorEC2] = useState(null);
+    const[isEC2DataMock, setIsEC2DataMock] = useState(false);
+
 
     // RDS
     const[rdsData, setRDSData] = useState(null);
     const[errorRDS, setErrorRDS] = useState(null);
+    const[isRDSDataMock, setIsRDSDataMock] = useState(false);
+    
 
     // S3
     const[s3Data, sets3Data] = useState(null);
     const[errorsS3, setErrorS3] = useState(null);
+    const[isS3DataMock, setIsS3DataMock] = useState(false);
+
 
     // Lambda
     const[lambdaData, setLambdaData] = useState(null);
     const[errorLambda, setErrorLambda] = useState(null);
+    const[isLambdaDataMock, setIsLambdaDataMock] = useState(false);
+
 
     // Load balancers
     const[loadBalancersData, setLoadBalancersData] = useState(null);
     const[errorLoadBalancers, setErrorLoadBalancers] = useState(null);
+    const[isLBDataMock, setIsLBDataMock] = useState(false);
+    
 
     // Load balancers
     const[EBSData, setEBSData] = useState(null);
     const[errorEBS, setErrorEBS] = useState(null);
+    const[isEBSDataMock, setIsEBSDataMock] = useState(false);
+
 
     // EIPs
     const[EIPsData, setEIPsData] = useState(null);
     const[errorEIPs, setErrorEIPs] = useState(null);
+    const[isEIPsDataMock, setIsEIPsDataMock] = useState(false);
+
 
     // Loading state
     const[isLoading, setIsLoading] = useState(true);
@@ -80,10 +97,12 @@ const useMockOrRealData = (isAuthenticated = false) => {
 
                 // Use mock data
                 setRegionData(mockData);
+                setIsRegionDataMock(true);
             } else {
                 console.log('No error, using real REGION data');
                 // else use the real data
                 setRegionData(responseRegion.data);
+                setIsRegionDataMock(false);
             }
 
 
@@ -109,10 +128,12 @@ const useMockOrRealData = (isAuthenticated = false) => {
 
                 // Use mock data
                 setEC2Data(mockData);
+                setIsEC2DataMock(true);
             } else {
                 console.log('No error, using real EC2 data');
                 // else use the real data
                 setEC2Data(responseEC2.data);
+                setIsEC2DataMock(false);
             }
 
             // RDS API calls ============================
@@ -137,10 +158,12 @@ const useMockOrRealData = (isAuthenticated = false) => {
 
                 // Use mock data
                 setRDSData(mockData);
+                setIsRDSDataMock(true);
             } else {
                 console.log('No error, using real RDS data');
                 // else use the real data
                 setRDSData(responseRDS.data);
+                setIsRDSDataMock(false);
             }
 
             // COST API calls ===============================
@@ -165,10 +188,12 @@ const useMockOrRealData = (isAuthenticated = false) => {
 
                 // Use mock data
                 setCostData(mockData);
+                setIsCostDataMock(true);
             } else {
                 console.log('No error, using real COST data');
                 // else use the real data
                 setCostData(reponseCOST.data);
+                setIsCostDataMock(false);
 
                 // console.log(rdsData?.rdsInstances?.length);
             }
@@ -191,9 +216,12 @@ const useMockOrRealData = (isAuthenticated = false) => {
 
                 // Use mock data
                 sets3Data(mockData);
+                setIsS3DataMock(true);
             } else {
                 console.log('No error, using real S3 data');
                 sets3Data(responseS3.data);
+                setIsS3DataMock(false);
+
             }
 
             // LAMBDA API calls ===================
@@ -211,9 +239,12 @@ const useMockOrRealData = (isAuthenticated = false) => {
                 console.warn('Lambda API call failed, using mock data', responseLambda.error);
 
                 setLambdaData(mockData);
+                setIsLambdaDataMock(true);
             } else {
                 console.log('No error, using real Lambda data');
                 setLambdaData(responseLambda.data);
+                setIsLambdaDataMock(false);
+
             }
 
             // ELB API calls ===================
@@ -232,9 +263,11 @@ const useMockOrRealData = (isAuthenticated = false) => {
                 console.warn('ELB API call failed, using mock data', responseELB.error);
 
                 setLoadBalancersData(mockData);
+                setIsLBDataMock(true);
             } else {
                 console.log('No error, using real ELB data');
                 setLoadBalancersData(responseELB.data);
+                setIsLBDataMock(false);
             }
 
             // EBS API calls ===================
@@ -253,9 +286,11 @@ const useMockOrRealData = (isAuthenticated = false) => {
                 console.warn('EBS API call failed, using mock data', responseEBS.error);
 
                 setEBSData(mockData);
+                setIsEBSDataMock(true);
             } else {
                 console.log('No error, using real EBS data');
                 setEBSData(responseEBS.data);
+                setIsEBSDataMock(false);
             }
 
             // EIPs API calls ===================
@@ -274,9 +309,11 @@ const useMockOrRealData = (isAuthenticated = false) => {
                 console.warn('EIPs API call failed, using mock data', responseEIPs.error);
 
                 setEIPsData(mockData);
+                setIsEIPsDataMock(true);
             } else {
                 console.log('No error, using real EIPs data');
                 setEIPsData(responseEIPs.data);
+                setIsEIPsDataMock(false);
             }
 
         } catch (err) {
@@ -284,8 +321,9 @@ const useMockOrRealData = (isAuthenticated = false) => {
             console.log('API call failed, using mock data');
 
             setEC2Data(mockData);
+            setIsEC2DataMock(true);
             setCostData(mockData);
-            setRDSData(mockData)
+            setRDSData(mockData);
 
         } finally {
             setIsLoading(false);
