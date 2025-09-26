@@ -1,0 +1,219 @@
+.mock-data-status {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.status-header h3 {
+    margin: 0;
+    color: #495057;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.status-summary {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.real-data-count,
+.mock-data-count {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.real {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    box-shadow: 0 0 8px rgba(40, 167, 69, 0.4);
+}
+
+.status-dot.mock {
+    background: linear-gradient(135deg, #ffc107, #fd7e14);
+    box-shadow: 0 0 8px rgba(255, 193, 7, 0.4);
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.service-status {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.service-status:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.service-status.real {
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    border-color: #28a745;
+}
+
+.service-status.real:hover {
+    background: linear-gradient(135deg, #c3e6cb, #b1dfbb);
+}
+
+.service-status.mock {
+    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+    border-color: #ffc107;
+}
+
+.service-status.mock:hover {
+    background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+}
+
+.service-icon {
+    font-size: 1.8rem;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+}
+
+.service-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.service-name {
+    font-weight: 600;
+    color: #495057;
+    font-size: 1rem;
+}
+
+.service-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    width: fit-content;
+}
+
+.service-badge.real {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+}
+
+.service-badge.mock {
+    background: linear-gradient(135deg, #ffc107, #fd7e14);
+    color: #212529;
+    box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3);
+}
+
+.status-indicator {
+    font-size: 1.5rem;
+    margin-left: 10px;
+}
+
+.mock-data-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 15px;
+    background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    border-left: 4px solid #dc3545;
+}
+
+.warning-icon {
+    font-size: 1.2rem;
+    margin-top: 2px;
+}
+
+.warning-text {
+    color: #721c24;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.warning-text strong {
+    font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .status-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    
+    .status-summary {
+        align-self: stretch;
+        justify-content: space-around;
+    }
+    
+    .service-status {
+        padding: 12px;
+    }
+    
+    .service-icon {
+        font-size: 1.5rem;
+        width: 35px;
+        height: 35px;
+    }
+}
+
+/* Animation for status changes */
+.service-status {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

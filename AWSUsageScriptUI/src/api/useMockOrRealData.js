@@ -60,6 +60,42 @@ const useMockOrRealData = (isAuthenticated = false) => {
     const[isLoading, setIsLoading] = useState(true);
 
     const fetchAWSData = async () => {
+        const FORCE_MOCK_TESTING = true; // Set to false to disable testing
+    
+        if (FORCE_MOCK_TESTING) {
+            console.log('🧪 TESTING MODE: Forcing some services to use mock data');
+            
+            // Force these services to use mock data for testing
+            setEC2Data(mockData);
+            setIsEC2DataMock(true);
+            
+            setLambdaData(mockData);
+            setIsLambdaDataMock(true);
+            
+            setEBSData(mockData);
+            setIsEBSDataMock(true);
+            
+            setRegionData(mockData);
+            setIsRegionDataMock(true);
+            
+            setRDSData(mockData);
+            setIsRDSDataMock(true);
+            
+            setCostData(mockData);
+            setIsCostDataMock(true);
+            
+            sets3Data(mockData);
+            setIsS3DataMock(true);
+            
+            setLoadBalancersData(mockData);
+            setIsLBDataMock(true);
+            
+            setEIPsData(mockData);
+            setIsEIPsDataMock(true);
+            
+            setIsLoading(false);
+            return; // Skip the real API calls
+        }
         // Turn on the loading state
         console.log('Loading ON ==================');
 
@@ -337,8 +373,18 @@ const useMockOrRealData = (isAuthenticated = false) => {
         }
     }, [isAuthenticated]);
 
-    // Return the values
-    return [regionData, errorRegion, ec2Data, errorEC2, rdsData, errorRDS, costData, errorCost, s3Data, errorsS3,lambdaData, errorLambda, loadBalancersData, errorLoadBalancers, EBSData, errorEBS, EIPsData, errorEIPs, isLoading];
+    return [
+        regionData, errorRegion, isRegionDataMock,
+        ec2Data, errorEC2, isEC2DataMock, 
+        rdsData, errorRDS, isRDSDataMock, 
+        costData, errorCost, isCostDataMock, 
+        s3Data, errorsS3, isS3DataMock,
+        lambdaData, errorLambda, isLambdaDataMock, 
+        loadBalancersData, errorLoadBalancers, isLBDataMock, 
+        EBSData, errorEBS, isEBSDataMock, 
+        EIPsData, errorEIPs, isEIPsDataMock, 
+        isLoading
+    ];
 }
 
 export default useMockOrRealData;

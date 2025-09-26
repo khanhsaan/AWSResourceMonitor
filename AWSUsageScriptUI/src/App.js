@@ -19,8 +19,19 @@ function App() {
   // Health check
   const[healthStatus, setHealthStatus] = useState('checking');
 
-  // Retrieve the values from useMockOrRealData.js
-  const[regionData, errorRegion, ec2Data, errorEC2, rdsData, errorRDS, costData, errorCost, s3Data, errorsS3,lambdaData, errorLambda, loadBalancersData, errorLoadBalancers, EBSData, errorEBS, EIPsData, errorEIPs, isLoading] = useMockOrRealData(isAuthenticated);
+  // Update the useMockOrRealData destructuring to include mock flags
+  const [
+    regionData, errorRegion, isRegionDataMock,
+    ec2Data, errorEC2, isEC2DataMock, 
+    rdsData, errorRDS, isRDSDataMock, 
+    costData, errorCost, isCostDataMock, 
+    s3Data, errorsS3, isS3DataMock,
+    lambdaData, errorLambda, isLambdaDataMock, 
+    loadBalancersData, errorLoadBalancers, isLBDataMock, 
+    EBSData, errorEBS, isEBSDataMock, 
+    EIPsData, errorEIPs, isEIPsDataMock, 
+    isLoading
+  ] = useMockOrRealData(isAuthenticated);
 
   // AWS credentials state
   const [awsCredentials, setAwsCredentials] = useState({
@@ -42,7 +53,7 @@ function App() {
     // If there is data being retrieved
     if(response.data){
       console.log('There is AWS CONFIGURATION response being retrieved!');
-      console.log('Message from backend: ' + response.data.sucess + "\n" + response.data.message);
+      console.log('Message from backend: ' + response.data.success + "\n" + response.data.message);
 
       // If the success is false, return false success state to the caller
       if(response.data.success === false){
@@ -205,6 +216,7 @@ function App() {
         </div>
       </header>
 
+
       {/* Navigation */}
       <nav className='nav-tabs'>
         {/* "Overview" button */}
@@ -242,6 +254,7 @@ function App() {
               count={ec2Data?.ec2Instances?.length || 0}
               icon={'💻'}
               status={'healthy'}
+              isMock={isEC2DataMock}
               // Show how many instances are running using filter
               details={`${ec2Data?.ec2Instances?.filter(i => i.status === 'running').length || 0} running`}>
             </ServiceCard>
@@ -252,6 +265,7 @@ function App() {
               count={rdsData?.rdsInstances?.length || 0}
               icon={'🗄️'}
               status={'healthy'}
+              isMock={isRDSDataMock}
               // Show how many databases are available using filter
               details={`${rdsData?.rdsInstances?.filter(i => i.status === 'available').length || 0} available`}>
             </ServiceCard>
@@ -262,7 +276,7 @@ function App() {
               count={s3Data.s3Buckets.length}
               icon={'🪣'}
               status={'healthy'}
-
+              isMock={isS3DataMock}
               // .reduce((acc, bucket) => acc + bucket.size, 0):
               // The reduce function loops over all elements in the array.
               // acc is the accumulator that keeps a running total.
@@ -273,10 +287,11 @@ function App() {
 
             {/* Service Card of Lambda Functions */}
             <ServiceCard
-              title={'Lamda Functions'}
+              title={'Lambda Functions'}
               count={lambdaData?.lambdaFunctions?.length || 0}
               icon={'λ'}
               status={'healthy'}
+              isMock={isLambdaDataMock}
               details={`All functions are active`}>
             </ServiceCard>
 
@@ -286,6 +301,7 @@ function App() {
               count={loadBalancersData?.loadBalancers?.length || 0}
               icon={'⚖️'}
               status={'healthy'}
+              isMock={isLBDataMock}
               // Show how many functions are active using filter
               details={`${loadBalancersData?.loadBalancers?.filter(i => i.state === 'active').length || 0} active`}>
             </ServiceCard>
@@ -296,6 +312,7 @@ function App() {
               count={EBSData?.ebsVolumes?.length || 0}
               icon={'💾'}
               status={'healthy'}
+              isMock={isEBSDataMock}
               // Show how many functions are active using filter
               details={`${EBSData?.ebsVolumes?.reduce((accumulator, vol) => accumulator + vol.size, 0).toFixed(1) || 0} GB totals`}>
             </ServiceCard>
@@ -376,7 +393,8 @@ function ServiceCard({
   count,
   icon,
   status,
-  details
+  details,
+  isMock = false  // New prop to indicate if using mock data
 }) {
 
   // Dictionary of status with corresponding colors
@@ -387,7 +405,7 @@ function ServiceCard({
   };
 
   return (
-    <div className='service-card'>
+    <div className={`service-card ${isMock ? 'mock-data' : ''}`}>
       <div className = 'card-header'>
 
         {/* Display the passed icon for the corresponding service */}
@@ -395,7 +413,11 @@ function ServiceCard({
 
         {/* Display the passed title with style */}
         <div className='card-title'>
-          <h3>{title}</h3>
+          <h3>
+            {title}
+            {/* Show "Mock Data" badge if using mock data */}
+            {isMock && <span className='mock-badge'>Mock Data</span>}
+          </h3>
           {/* Display the corresponding status with style */}
           <span className = {`status-indicator ${status}`}></span>
         </div>
