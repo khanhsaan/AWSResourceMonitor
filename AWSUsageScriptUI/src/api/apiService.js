@@ -119,9 +119,11 @@ const awsResourceApi = {
         });
 
         // Store the JWT Token
-        if(response.data && response.data.access_token){
+        if(response.data && response.data.token.access_token){
             console.log('----- Configure AWS SUCCESSFULLY, setting the token...')
             setAuthToken(response.data.token.access_token)
+        } else if(!response.data){
+            console.warn('---- There is NO desponse from configure AWS!')
         }
 
         return response;
