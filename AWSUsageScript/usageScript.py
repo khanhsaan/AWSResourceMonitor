@@ -104,7 +104,7 @@ async def aws_health():
             'message': f'Backend is NOT accessible: {e}'
         }
         
-@app.post('/configure', response_model=Token)
+@app.post('/configure')
 async def aws_configure(credentials: AWSCredentials):
     try:
         print(f"--- COFIGURING AWS CREDENTIALS ---")
@@ -151,18 +151,16 @@ async def aws_configure(credentials: AWSCredentials):
         # If there is no exception has been caught, print the message of success
         print(f"AWS credentials configured sucessfully!")
         
-        token = Token(
-            access_token=access_token,
-            token_type="bearer",
-            expires_in = ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-            account_id=identity.get('Account'),
-            region=credentials.region
-        )
-        
         return {
             "success": True,
             "message": f"Authentication SUCCESSFULLY!",
-            "data": token.dict() # Convert token data to dict
+            "data": {
+                "access_token": access_token,
+                "token_type": "bearer",
+                "expires_in": ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+                "account_id": identity.get('Account'),
+                "region": credentials.region
+            }
         }
         
     
