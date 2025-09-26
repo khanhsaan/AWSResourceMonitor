@@ -15,7 +15,7 @@ app = FastAPI()
 app = FastAPI(root_path="/api")
 
 # JWT Configuration
-SECRET_KEY = secrets.token_urlsafe(32)
+SECRET_KEY = "123"
 ALGORITHM = 'HS256'
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -137,7 +137,7 @@ async def aws_configure(credentials: AWSCredentials):
         # Create JWT Token once authenthication has been passed
         print(f"----- Creating JWT Token")
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-        access_token = create_access_token(
+        response = create_access_token(
             data={
                 "account_id": identity.get('Account'),
                 "region": credentials.region,
@@ -146,16 +146,25 @@ async def aws_configure(credentials: AWSCredentials):
             expires_delta=access_token_expires
         )
         
+        access_token = response['encoded_jwt']
+        
         # If there is no exception has been caught, print the message of success
         print(f"AWS credentials configured sucessfully!")
         
-        return Token(
+        token = Token(
             access_token=access_token,
             token_type="bearer",
             expires_in = ACCESS_TOKEN_EXPIRE_MINUTES * 60,
             account_id=identity.get('Account'),
             region=credentials.region
         )
+        
+        return {
+            "success": True,
+            "message": f"Authentication SUCCESSFULLY!",
+            "data": token.dict() # Convert token data to dict
+        }
+        
     
     # Raise any exception if there is or has been raised by configure_aws_cli()
     except ClientError as e:
@@ -230,7 +239,7 @@ async def aws_get_region(current_user: dict = Depends(verify_token)):
         }
     
 @app.get("/costs")
-def get_aws_costs():
+def get_aws_costs(current_user: dict = Depends(verify_token)):
     try:
         # Get the Cost Explorer client
         cost_client = boto3.client('ce')
@@ -274,7 +283,7 @@ def get_aws_costs():
 
 # Check RDS
 @app.get("/rds")
-async def check_rds_services():
+async def check_rds_services(current_user: dict = Depends(verify_token)):
     try:
         print("---RDS Databases---")
         rds_client = boto3.client('rds')
@@ -332,7 +341,7 @@ async def check_rds_services():
 
 # Check S3
 @app.get("/s3")
-async def check_s3_services():
+async def check_s3_services(current_user: dict = Depends(verify_token)):
     try:
         print("--- S3 Buckers ---")
         s3_client = boto3.client('s3')
@@ -427,7 +436,7 @@ async def check_s3_services():
         
 # Check Lambda service
 @app.get("/lambda")
-async def check_lambda_services():
+async def check_lambda_services(current_user: dict = Depends(verify_token)):
     try:
         # Collect all of the lambda functions
         lambda_data = []
@@ -487,7 +496,7 @@ async def check_lambda_services():
         
 # Check load balancers
 @app.get("/elb")
-def check_load_balancers():
+def check_load_balancers(current_user: dict = Depends(verify_token)):
     try:
         # Collect all of the load balancers
         elb_data = []
@@ -575,7 +584,7 @@ def check_load_balancers():
 
 # Check EC2
 @app.get("/ec2")
-async def check_ec2_services():
+async def check_ec2_services(current_user: dict = Depends(verify_token)):
     try:
         # Collect all the instance data
         instance_data = []
@@ -628,7 +637,7 @@ async def check_ec2_services():
         
 # Check EBS Volumes
 @app.get("/ebs")
-async def check_ebs_volume():
+async def check_ebs_volume(current_user: dict = Depends(verify_token)):
     try:
         # Collect all of the ebs volumes
         ebs_data = []
@@ -710,7 +719,7 @@ async def check_ebs_volume():
         
 # Check Elastic IPs
 @app.get("/eip")
-async def check_elastic_ips():
+async def check_elastic_ips(current_user: dict = Depends(verify_token)):
     try:
         # Collect all of the elastic ips
         eips_data = []
@@ -775,7 +784,7 @@ async def check_elastic_ips():
             "total_count": 0,
         }
         
-def check_vpc_resources():
+def check_vpc_resources(current_user: dict = Depends(verify_token)):
     try:
         print("--- VPC Resources ---")
         # Create the EC2 clients
@@ -803,7 +812,7 @@ def check_vpc_resources():
 
 # Getting total service cost
 @app.get("/cost")
-async def get_service_costs():
+async def get_service_costs(current_user: dict = Depends(verify_token)):
     try:
         print("=== COSTS BY SERVICE ===")
         

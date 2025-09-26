@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-import {getAuthToken, setAuthToken, clearAuthToken} from "../../JWT/jwtService.js"
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry.js";
+import {getAuthToken, setAuthToken, clearAuthToken} from "../JWT/jwtService"
 let API_BASE_URL = "";
 
 const possibleURLs = [
@@ -59,7 +58,7 @@ const apiCall = async(baseURL = API_BASE_URL, endpoint, options = {}) => {
             headers['Authorization'] = `Bearer ${token}`
         }
 
-        const repsonse = await fetch(`${baseURL}${endpoint}`, {
+        const response = await fetch(`${baseURL}${endpoint}`, {
             headers,
             ...options,
         })
@@ -71,7 +70,7 @@ const apiCall = async(baseURL = API_BASE_URL, endpoint, options = {}) => {
             throw new Error('Authentication expired');
         }
 
-        if(!repsonse.ok){
+        if(!response.ok){
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
@@ -94,21 +93,6 @@ const apiCall = async(baseURL = API_BASE_URL, endpoint, options = {}) => {
     }
 }
 
-const authcall = async(endpoint, credentials) => {
-    const options = {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        // Specify the method: POST
-        method: 'POST',
-        // JSON format the passed credentials
-        body: JSON.stringify(credentials)
-    };
-
-    // Pass the endpoint and option to apiCall()
-    return await apiCall(API_BASE_URL, endpoint, options);
-}
-
 const awsResourceApi = {
     // configure AWS credentials
     configureAWS: async (credentials) => {
@@ -125,11 +109,22 @@ const awsResourceApi = {
         }
         
         // Pass the endpoint and mapped credentials to apiCall(), then wait and return its repsonse
-        return await authcall('/configure', {
-            access_key,
-            secret_access_key,
-            region
+        const response = await apiCall(API_BASE_URL, '/configure', {
+            method: 'POST',
+            body: JSON.stringify({
+                access_key,
+                secret_access_key,
+                region
+            })
         });
+
+        // Store the JWT Token
+        if(response.data && response.data.access_token){
+            console.log('----- Configure AWS SUCCESSFULLY, setting the token...')
+            setAuthToken(response.data.access_token)
+        }
+
+        return response;
     },
 
 
