@@ -8,9 +8,6 @@ from pydantic import BaseModel
 import subprocess
 import os
 from jose import JWTError, jwt
-import secrets
-
-app = FastAPI()
 
 app = FastAPI(root_path="/api")
 
@@ -43,7 +40,11 @@ class Token(BaseModel):
     expires_in: int
     account_id: str
     region: str
-    
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("usageScript:app", host="127.0.0.1", port=8000, reload=True)
+
 # JWT helper
 def create_access_token(data: dict, expires_delta: timedelta = None):
     try:
