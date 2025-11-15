@@ -7,8 +7,7 @@ services:
       - "3000:80"
     container_name: aws-usage-frontend
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend    
     environment:
       - REACT_APP_API_BASE_URL=http://localhost:5001
 
@@ -17,13 +16,7 @@ services:
       context: ./AWSUsageScriptBackEnd
       dockerfile: Dockerfile.backend
     ports:
-      - "5001:5000"
+      - "5001:5001"
     container_name: aws-usage-backend
     volumes:
       - ./data:/app/data
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s

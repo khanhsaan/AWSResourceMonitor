@@ -10,26 +10,26 @@ import awsResourceApi, { findURL } from './api/apiService.js';
 
 function App() {
   const [activeTab, setActiveTab] = useState('overview');
-  
-  const[logginFailed, setLogginFailed] = useState(false);
+
+  const [logginFailed, setLogginFailed] = useState(false);
 
   // Authenticate state
-  const[isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Health check
-  const[healthStatus, setHealthStatus] = useState('checking');
+  const [healthStatus, setHealthStatus] = useState('checking');
 
   // Update the useMockOrRealData destructuring to include mock flags
   const [
     regionData, errorRegion, isRegionDataMock,
-    ec2Data, errorEC2, isEC2DataMock, 
-    rdsData, errorRDS, isRDSDataMock, 
-    costData, errorCost, isCostDataMock, 
+    ec2Data, errorEC2, isEC2DataMock,
+    rdsData, errorRDS, isRDSDataMock,
+    costData, errorCost, isCostDataMock,
     s3Data, errorsS3, isS3DataMock,
-    lambdaData, errorLambda, isLambdaDataMock, 
-    loadBalancersData, errorLoadBalancers, isLBDataMock, 
-    EBSData, errorEBS, isEBSDataMock, 
-    EIPsData, errorEIPs, isEIPsDataMock, 
+    lambdaData, errorLambda, isLambdaDataMock,
+    loadBalancersData, errorLoadBalancers, isLBDataMock,
+    EBSData, errorEBS, isEBSDataMock,
+    EIPsData, errorEIPs, isEIPsDataMock,
     isLoading
   ] = useMockOrRealData(isAuthenticated);
 
@@ -41,22 +41,22 @@ function App() {
   });
 
   // Handle login
-  const handleLogin = async(credentials) => {
+  const handleLogin = async (credentials) => {
     // Get the repsonse from the api service
     const response = await awsResourceApi.configureAWS(credentials);
 
     // If there is error
-    if(response.error){
+    if (response.error) {
       console.warn('AWS CONFIGURATION FAILED!');
     }
-    
+
     // If there is data being retrieved
-    if(response.data){
+    if (response.data) {
       console.log('There is AWS CONFIGURATION response being retrieved!');
       console.log('Message from backend: ' + response.data.success + "\n" + response.data.message);
 
       // If the success is false, return false success state to the caller
-      if(response.data.success === false){
+      if (response.data.success === false) {
         console.log("LOG IN FAILED!")
         return {
           success: false,
@@ -64,7 +64,7 @@ function App() {
         }
       }
     }
-    if(logginFailed){
+    if (logginFailed) {
       setIsAuthenticated(false);
     } else {
       setIsAuthenticated(true);
@@ -84,7 +84,7 @@ function App() {
     console.log('User logged out successfully!');
   }
 
-  const checkHealthy = async() => {
+  const checkHealthy = async () => {
     // Start the timer
     const start = Date.now();
 
@@ -92,18 +92,18 @@ function App() {
     try {
       const healthResponse = await findURL();
 
-      if(healthResponse.error) {
+      if (healthResponse.error) {
         console.error("There is error: ", healthResponse.error);
         setHealthStatus('error');
       }
 
-      if(healthResponse.data) {
+      if (healthResponse.data) {
         console.log("There is health response BEING retrieved!");
 
-        if(healthResponse.data.success) {
+        if (healthResponse.data.success) {
           // Stop the timer
           const end = Date.now();
-          if(end - start < 1500) {
+          if (end - start < 1500) {
             const diff = 1500 - (end - start);
 
             setTimeout(() => setHealthStatus('healthy'), diff + (end - start));
@@ -112,7 +112,7 @@ function App() {
           setHealthStatus('error');
         }
       }
-      
+
     } catch (err) {
       console.error("There is NO health response: ", err);
       setHealthStatus('error');
@@ -128,16 +128,16 @@ function App() {
   }, []);
 
   // HEALTH CHECK
-  if(healthStatus === 'checking') {
+  if (healthStatus === 'checking') {
     return (
       <div className='loading-screen'>
-      <div className='loading-spinner'></div>
+        <div className='loading-spinner'></div>
         <p>Checking backend health ...</p>
       </div>
     )
   }
 
-  if(healthStatus === 'error') {
+  if (healthStatus === 'error') {
     return (
       <div className='error-screen'>
         <div className='error-container'>
@@ -155,8 +155,8 @@ function App() {
               <button
                 className='retry-btn'
                 onClick={retryHealthCheck}>
-                  🔄 Retry Connection
-                </button>
+                🔄 Retry Connection
+              </button>
             </div>
           </div>
         </div>
@@ -165,11 +165,11 @@ function App() {
   }
 
   // LOGIN STATE
-  if(!isAuthenticated) {
-    return <LoginForm 
-              onLogin = {handleLogin} 
-              onLoginStatus={(status) => setLogginFailed(status.success)}>
-          </LoginForm>
+  if (!isAuthenticated) {
+    return <LoginForm
+      onLogin={handleLogin}
+      onLoginStatus={(status) => setLogginFailed(status.success)}>
+    </LoginForm>
   }
 
 
@@ -179,10 +179,10 @@ function App() {
   // }, []);
 
   // if the loading state is true, render loading screen and loading wheel
-  if(isLoading) {
+  if (isLoading) {
     return (
       <div className='loading-screen'>
-      <div className='loading-spinner'></div>
+        <div className='loading-spinner'></div>
         <p>Loading AWS Resources...</p>
       </div>
     )
@@ -204,14 +204,14 @@ function App() {
               <h2>${costData.totalCost.toFixed(2)}</h2>
               <p>Total Cost This Month</p>
             </div>
-            
+
             {/* Log out button */}
             <button
               className='logout-btn'
               onClick={handleLogOut}
               title="Logout">
-                Logout
-              </button>
+              Logout
+            </button>
           </div>
         </div>
       </header>
@@ -224,21 +224,21 @@ function App() {
         <button
           className={activeTab === 'overview' ? 'active' : ''}
           onClick={() => setActiveTab('overview')}>
-            Overview
+          Overview
         </button>
 
         {/* "Services" button */}
         <button
-          className={activeTab === 'services' ? 'active': ''}
+          className={activeTab === 'services' ? 'active' : ''}
           onClick={() => setActiveTab('services')}>
-            Services
+          Services
         </button>
 
         {/* "Cost Breakdown" button */}
         <button
-          className={activeTab == 'costs' ? 'active': ''}
+          className={activeTab == 'costs' ? 'active' : ''}
           onClick={() => setActiveTab('costs')}>
-            Cost Breakdown
+          Cost Breakdown
         </button>
       </nav>
 
@@ -406,7 +406,7 @@ function ServiceCard({
 
   return (
     <div className={`service-card ${isMock ? 'mock-data' : ''}`}>
-      <div className = 'card-header'>
+      <div className='card-header'>
 
         {/* Display the passed icon for the corresponding service */}
         <span className='service-icon'>{icon}</span>
@@ -419,10 +419,10 @@ function ServiceCard({
             {isMock && <span className='mock-badge'>Mock Data</span>}
           </h3>
           {/* Display the corresponding status with style */}
-          <span className = {`status-indicator ${status}`}></span>
+          <span className={`status-indicator ${status}`}></span>
         </div>
       </div>
-      
+
       {/* Display the card content with style */}
       <div className='card-content'>
         {/* Display the total number of instances */}

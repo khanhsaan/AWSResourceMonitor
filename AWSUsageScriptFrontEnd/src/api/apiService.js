@@ -1,22 +1,23 @@
 import { getAuthToken, setAuthToken, clearAuthToken } from "../JWT/jwtService"
 
-const isRunningInDocker = typeof process !== 'undefined' &&
-    process.env &&
-    process.env.REACT_APP_RUNNING_IN_DOCKER === 'true';
+// Check what the environment variable actually is
+console.log('================================================');
+console.log('🔧 API Service Initialization');
+console.log('process.env.REACT_APP_API_BASE_URL:', process.env.REACT_APP_API_BASE_URL);
+console.log('typeof:', typeof process.env.REACT_APP_API_BASE_URL);
+console.log('================================================');
 
-let API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001';
+let API_BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:5001';
+
+console.log('📍 Final API_BASE_URL:', API_BASE_URL);
 
 const findURL = async () => {
-    const url = API_BASE_URL
     let check = false;
     try {
-        const response = await apiCall(url, '/health');
+        const response = await apiCall('/health');
 
         if (response.data && response.data.success) {
-            console.log(`FOUND right URL: ${url}`);
-            API_BASE_URL = url;
             check = true;
-
             return {
                 data: response.data,
                 error: null,
@@ -25,7 +26,7 @@ const findURL = async () => {
             throw new Error();
         }
     } catch (err) {
-        console.log(`Failed to connect to ${url}, continue to the next URL`);
+        console.log(`Failed to connect to ${API_BASE_URL}, continue to the next URL`);
     }
     if (!check) {
         console.log(`CANNOT find backend URL, check the initiation of backend`);

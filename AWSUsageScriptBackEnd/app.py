@@ -24,10 +24,10 @@ security = HTTPBearer()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://frontend:80"
+        "*"
     ],
     allow_credentials=True,
-    allow_methods=["GET", "POST"], # Only allow these methods
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
@@ -104,6 +104,7 @@ async def aws_health():
             'message': f'Backend is accessible!'
         }
     except Exception as e:
+        print(f"--- Health check error: {e} ---")
         return {
             'success': False,
             'message': f'Backend is NOT accessible: {e}'
