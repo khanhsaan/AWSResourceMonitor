@@ -43,7 +43,7 @@ class Token(BaseModel):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("usageScript:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
 
 # JWT helper
 def create_access_token(data: dict, expires_delta: timedelta = None):
@@ -615,7 +615,7 @@ async def check_ec2_services(current_user: dict = Depends(verify_token)):
                 instance_data.append(instance_info)
                 
                 
-                print(f"Instance ID: {instance_id}, Type: {instance_type}, Launch Time: {launch_time}")
+                print(f"Instance ID: {instance_info['instance_id']}, Type: {instance_info['instance_type']}, Launch Time: {instance_info['launch_time']}")
 
         return {
             "success": True,

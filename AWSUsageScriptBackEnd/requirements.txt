@@ -1,0 +1,7 @@
+boto3==1.40.74
+botocore==1.40.74
+fastapi==0.121.2
+pydantic==2.12.4
+pytest==9.0.1
+python_jose==3.5.0
+uvicorn==0.38.0
