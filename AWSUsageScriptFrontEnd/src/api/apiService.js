@@ -1,10 +1,10 @@
-import {getAuthToken, setAuthToken, clearAuthToken} from "../JWT/jwtService"
+import { getAuthToken, setAuthToken, clearAuthToken } from "../JWT/jwtService"
 
 const isRunningInDocker = typeof process !== 'undefined' &&
     process.env &&
     process.env.REACT_APP_RUNNING_IN_DOCKER === 'true';
 
-let API_BASE_URL = process.env.REACT_APP_API_BASE_URL
+let API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001';
 
 const findURL = async () => {
     const url = API_BASE_URL
@@ -12,7 +12,7 @@ const findURL = async () => {
     try {
         const response = await apiCall(url, '/health');
 
-        if(response.data && response.data.success){
+        if (response.data && response.data.success) {
             console.log(`FOUND right URL: ${url}`);
             API_BASE_URL = url;
             check = true;
@@ -27,7 +27,7 @@ const findURL = async () => {
     } catch (err) {
         console.log(`Failed to connect to ${url}, continue to the next URL`);
     }
-    if(!check) {
+    if (!check) {
         console.log(`CANNOT find backend URL, check the initiation of backend`);
 
         return {
@@ -38,8 +38,8 @@ const findURL = async () => {
 }
 
 
-const apiCall = async(baseURL = API_BASE_URL, endpoint, options = {}) => {
-    try{
+const apiCall = async (endpoint, options = {}) => {
+    try {
         const token = getAuthToken();
 
         const headers = {
@@ -51,28 +51,28 @@ const apiCall = async(baseURL = API_BASE_URL, endpoint, options = {}) => {
         };
 
         // Add token to the headers
-        if(token && endpoint !== '/health' && endpoint !== '/configure'){
+        if (token && endpoint !== '/health' && endpoint !== '/configure') {
             headers['Authorization'] = `Bearer ${token}`
         }
 
-        const response = await fetch(`${baseURL}${endpoint}`, {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
             headers,
             ...options,
         })
 
-        if(response.status === 401){
+        if (response.status === 401) {
             clearAuthToken();
             // Trigger re-authentication in your app
             window.dispatchEvent(new CustomEvent('tokenExpired'));
             throw new Error('Authentication expired');
         }
 
-        if(!response.ok){
+        if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
-        
+
         // Debug    
         // console.log(data);
 
@@ -94,17 +94,17 @@ const awsResourceApi = {
     // configure AWS credentials
     configureAWS: async (credentials) => {
         // Map the passed credentials with the new specified attributes
-        const {access_key, secret_access_key, region} = credentials;
+        const { access_key, secret_access_key, region } = credentials;
 
         // Validate the credentials
-        if(!access_key || !secret_access_key || !region) {
+        if (!access_key || !secret_access_key || !region) {
             return {
-                data: null, 
+                data: null,
                 // raise error
                 error: 'Missing required credentials: access_key, secret_access_key, and region are all required'
             }
         }
-        
+
         // Pass the endpoint and mapped credentials to apiCall(), then wait and return its repsonse
         const response = await apiCall(API_BASE_URL, '/configure', {
             method: 'POST',
@@ -116,10 +116,10 @@ const awsResourceApi = {
         });
 
         // Store the JWT Token
-        if(response.data && response.data.token.access_token){
+        if (response.data && response.data.token.access_token) {
             console.log('----- Configure AWS SUCCESSFULLY, setting the token...')
             setAuthToken(response.data.token.access_token)
-        } else if(!response.data){
+        } else if (!response.data) {
             console.warn('---- There is NO desponse from configure AWS!')
         }
 
@@ -134,43 +134,43 @@ const awsResourceApi = {
 
     // get AWS Cost
     getAWSCosts: async () => {
-        return await apiCall(API_BASE_URL,'/costs')
+        return await apiCall(API_BASE_URL, '/costs')
     },
 
     // Get EC2 instances
     getRDS: async () => {
-        return await apiCall(API_BASE_URL,'/rds');
+        return await apiCall(API_BASE_URL, '/rds');
     },
 
     // Get RDS
     getS3: async () => {
-        return await apiCall(API_BASE_URL,'/s3');
+        return await apiCall(API_BASE_URL, '/s3');
     },
 
     // Get Lambda
     getLambda: async () => {
-        return await apiCall(API_BASE_URL,'/lambda');
+        return await apiCall(API_BASE_URL, '/lambda');
     },
 
     // Get load balancers
     getELB: async () => {
-        return await apiCall(API_BASE_URL,'/elb');
+        return await apiCall(API_BASE_URL, '/elb');
     },
 
     // Get EC2
     getEC2: async () => {
-        return await apiCall(API_BASE_URL,'/ec2');
+        return await apiCall(API_BASE_URL, '/ec2');
     },
 
     // Get EBS
     getEBS: async () => {
-        return await apiCall(API_BASE_URL,'/ebs');
+        return await apiCall(API_BASE_URL, '/ebs');
     },
 
     // Get Elastic IPs
     getEIP: async () => {
-        return await apiCall(API_BASE_URL,'/eip');
+        return await apiCall(API_BASE_URL, '/eip');
     }
-}   
+}
 export { findURL };
 export default awsResourceApi;

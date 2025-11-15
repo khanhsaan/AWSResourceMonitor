@@ -24,9 +24,8 @@ security = HTTPBearer()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",
-        "http://0.0.0.0:5000",
-        "http://frontend:3000"],
+        "http://frontend:80"
+    ],
     allow_credentials=True,
     allow_methods=["GET", "POST"], # Only allow these methods
     allow_headers=["*"],
@@ -98,6 +97,8 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
 @app.get('/health')
 async def aws_health():
     try:
+        print("--- Health check called ---")
+        print
         return {
             'success': True,
             'message': f'Backend is accessible!'
