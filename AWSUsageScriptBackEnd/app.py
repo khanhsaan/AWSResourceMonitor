@@ -23,7 +23,10 @@ security = HTTPBearer()
 # Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://0.0.0.0:3000"], # Only allow from this addresses
+    allow_origins=[
+        "http://localhost:3000",
+        "http://0.0.0.0:5000",
+        "http://frontend:3000"],
     allow_credentials=True,
     allow_methods=["GET", "POST"], # Only allow these methods
     allow_headers=["*"],
@@ -43,7 +46,7 @@ class Token(BaseModel):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("app:app", host="0.0.0.0", port=5001, reload=True)
 
 # JWT helper
 def create_access_token(data: dict, expires_delta: timedelta = None):

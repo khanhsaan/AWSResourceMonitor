@@ -1,35 +1,31 @@
-import { useEffect } from "react";
 import {getAuthToken, setAuthToken, clearAuthToken} from "../JWT/jwtService"
-let API_BASE_URL = "";
 
-const possibleURLs = [
-    "http://localhost:8000/api",
-    "http://0.0.0.0:8000/api",
-    "http://127.0.0.1:8000/api",
-]
+const isRunningInDocker = typeof process !== 'undefined' &&
+    process.env &&
+    process.env.REACT_APP_RUNNING_IN_DOCKER === 'true';
+
+let API_BASE_URL = process.env.REACT_APP_API_BASE_URL
 
 const findURL = async () => {
+    const url = API_BASE_URL
     let check = false;
+    try {
+        const response = await apiCall(url, '/health');
 
-    for(const url of possibleURLs){
-        try {
-            const response = await apiCall(url, '/health');
+        if(response.data && response.data.success){
+            console.log(`FOUND right URL: ${url}`);
+            API_BASE_URL = url;
+            check = true;
 
-            if(response.data && response.data.success){
-                console.log(`FOUND right URL: ${url}`);
-                API_BASE_URL = url;
-                check = true;
-
-                return {
-                    data: response.data,
-                    error: null,
-                }
-            } else if (response.error) {
-                throw new Error();
+            return {
+                data: response.data,
+                error: null,
             }
-        } catch (err) {
-            console.log(`Failed to connect to ${url}, continue to the next URL`);
+        } else if (response.error) {
+            throw new Error();
         }
+    } catch (err) {
+        console.log(`Failed to connect to ${url}, continue to the next URL`);
     }
     if(!check) {
         console.log(`CANNOT find backend URL, check the initiation of backend`);

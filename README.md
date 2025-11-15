@@ -91,7 +91,7 @@ chmod +x linuxStart.bat
 #### Backend Setup
 ```bash
 # Navigate to backend directory
-cd AWSUsageScript
+cd AWSUsageScriptBackEnd
 
 # Create virtual environment
 python -m venv venv
@@ -107,13 +107,13 @@ pip install "fastapi[standard]"
 pip install -r requirements.txt
 
 # Start the backend server
-fastapi dev usageScript.py --port 8000
+fastapi dev app.py --port 8000
 ```
 
 #### Frontend Setup
 ```bash
 # Open new terminal and navigate to frontend directory
-cd AWSUsageScriptUI
+cd AWSUsageScriptFrontEnd
 
 # Install dependencies
 npm install
@@ -127,7 +127,7 @@ npm start
 ### Backend Docker Container
 ```bash
 # Navigate to backend directory
-cd AWSUsageScript
+cd AWSUsageScriptBackEnd
 
 # Build the Docker image
 docker build -t aws-usage-backend .
@@ -190,13 +190,13 @@ The application supports multiple authentication methods:
 
 ### Backend Tests
 ```bash
-cd AWSUsageScript
+cd AWSUsageScriptBackEnd
 python -m pytest tests/
 ```
 
 ### Frontend Tests
 ```bash
-cd AWSUsageScriptUI
+cd AWSUsageScriptFrontEnd
 npm test
 ```
 

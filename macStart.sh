@@ -22,7 +22,7 @@ fi
 # ===========================
 
 echo "=== Setting up Python virtual environment ==="
-cd AWSUsageScript || exit
+cd AWSUsageScriptBackEnd || exit
 
 if [ ! -d "venv" ]; then
     python3 -m venv venv
@@ -38,7 +38,7 @@ cd ..
 # RUN BACKEND IN NEW TERMINAL
 # ===========================
 echo "=== Starting backend (FastAPI) in new terminal ==="
-osascript -e 'tell app "Terminal" to do script "cd \"'"$(pwd)/AWSUsageScript"'\" && source venv/bin/activate && python usageScript.py"'
+osascript -e 'tell app "Terminal" to do script "cd \"'"$(pwd)/AWSUsageScript"'\" && source venv/bin/activate && python app.py"'
 
 # ===========================
 # RUN FRONTEND IN NEW TERMINAL
