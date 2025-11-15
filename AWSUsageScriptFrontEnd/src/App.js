@@ -45,19 +45,10 @@ function App() {
     // Get the repsonse from the api service
     const response = await awsResourceApi.configureAWS(credentials);
 
-    // If there is error
-    if (response.error) {
-      console.warn('AWS CONFIGURATION FAILED!');
-    }
-
     // If there is data being retrieved
     if (response.data) {
-      console.log('There is AWS CONFIGURATION response being retrieved!');
-      console.log('Message from backend: ' + response.data.success + "\n" + response.data.message);
-
       // If the success is false, return false success state to the caller
       if (response.data.success === false) {
-        console.log("LOG IN FAILED!")
         return {
           success: false,
           error: response.data.message || 'Authentication failed!'
@@ -80,8 +71,6 @@ function App() {
       secret_access_key: '',
       region: 'ap-southeast-2'
     });
-
-    console.log('User logged out successfully!');
   }
 
   const checkHealthy = async () => {
@@ -93,13 +82,10 @@ function App() {
       const healthResponse = await findURL();
 
       if (healthResponse.error) {
-        console.error("There is error: ", healthResponse.error);
         setHealthStatus('error');
       }
 
       if (healthResponse.data) {
-        console.log("There is health response BEING retrieved!");
-
         if (healthResponse.data.success) {
           // Stop the timer
           const end = Date.now();
@@ -114,7 +100,6 @@ function App() {
       }
 
     } catch (err) {
-      console.error("There is NO health response: ", err);
       setHealthStatus('error');
     }
   }

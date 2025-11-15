@@ -3,8 +3,6 @@ import { getAuthToken, setAuthToken, clearAuthToken } from "../JWT/jwtService"
 
 let API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001';
 
-console.log('📍 Final API_BASE_URL:', API_BASE_URL);
-
 const findURL = async () => {
     let check = false;
     try {
@@ -20,11 +18,9 @@ const findURL = async () => {
             throw new Error();
         }
     } catch (err) {
-        console.log(`Failed to connect to ${API_BASE_URL}, continue to the next URL`);
+        // Connection failed, continue to next URL
     }
     if (!check) {
-        console.log(`CANNOT find backend URL, check the initiation of backend`);
-
         return {
             data: null,
             error: "CANNOT find backend URL, check the initiation of backend",
@@ -67,16 +63,11 @@ const apiCall = async (endpoint, options = {}) => {
 
         const data = await response.json();
 
-        // Debug    
-        // console.log(data);
-
         return {
             data,
             error: null,
         }
     } catch (error) {
-        console.log(`API call failed for ${endpoint}:`, error);
-
         return {
             data: null,
             error: error.message
@@ -111,10 +102,7 @@ const awsResourceApi = {
 
         // Store the JWT Token
         if (response.data && response.data.token.access_token) {
-            console.log('----- Configure AWS SUCCESSFULLY, setting the token...')
             setAuthToken(response.data.token.access_token)
-        } else if (!response.data) {
-            console.warn('---- There is NO desponse from configure AWS!')
         }
 
         return response;
