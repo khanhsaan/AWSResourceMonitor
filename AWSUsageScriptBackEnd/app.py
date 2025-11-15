@@ -1,7 +1,7 @@
 import boto3
 from datetime import datetime, timedelta
 from botocore.exceptions import ClientError
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
@@ -9,7 +9,7 @@ import subprocess
 import os
 from jose import JWTError, jwt
 
-app = FastAPI(root_path="/api")
+app = FastAPI()
 
 # JWT Configuration
 SECRET_KEY = "123"
@@ -18,16 +18,32 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 # Security scheme
 # “I expect clients to send an Authorization: Bearer <token> header with requests.”
-security = HTTPBearer()
+security = HTTPBearer(auto_error=False)
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    print(f"🔍 {request.method} {request.url.path}")
+    print(f"🔍 Origin: {request.headers.get('origin', 'NO ORIGIN')}")
+    print(f"🔍 Headers: {dict(request.headers)}")
+    
+    response = await call_next(request)
+    
+    print(f"📤 Response Status: {response.status_code}")
+    print(f"📤 Response Headers: {dict(response.headers)}")
+    
+    return response
 
 # Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "*"
+        "http://localhost:3000",
+        "http://localhost:80",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:80",
     ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -74,6 +90,13 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
         
 def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
     try:
+        if credentials is None:
+            print("--- No credentials provided")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="No authorization token provided",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
         payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
         account_id: str = payload.get("account_id")
         region: str = payload.get("region")
