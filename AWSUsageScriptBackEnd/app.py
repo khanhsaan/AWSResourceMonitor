@@ -156,7 +156,7 @@ async def aws_configure(credentials: AWSCredentials):
         print(f"AWS Account ID: {identity.get('Account')}")
         print(f"User ARN: {identity.get('Arn')}")
 
-        configure_aws_cli(credentials)
+        # configure_aws_cli(credentials)
         
         # Specify the os env os it can be used by CLI or SDK from now on
         os.environ['AWS_ACCESS_KEY_ID'] = credentials.access_key
@@ -202,13 +202,6 @@ async def aws_configure(credentials: AWSCredentials):
         
 def configure_aws_cli (credentials: AWSCredentials):
     try:
-        # check=True: will raise a CalledProcessError if the command fails.
-
-        # capture_output=True: captures stdout and stderr instead of printing them.
-
-        # text=True: returns output as a string rather than bytes.
-
-        # Configure AWS CLI access key
         subprocess.run([
             'aws', 'configure', 'set', 'aws_access_key_id', credentials.access_key
         ], check = True, capture_output=True, text=True)

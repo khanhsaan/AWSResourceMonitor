@@ -9,8 +9,6 @@ import os
 
 app = FastAPI()
 
-app = FastAPI(root_path="/api")
-
 # Enable CORS
 app.add_middleware(
     CORSMiddleware,

@@ -1,13 +1,7 @@
 import { getAuthToken, setAuthToken, clearAuthToken } from "../JWT/jwtService"
 
-// Check what the environment variable actually is
-console.log('================================================');
-console.log('🔧 API Service Initialization');
-console.log('process.env.REACT_APP_API_BASE_URL:', process.env.REACT_APP_API_BASE_URL);
-console.log('typeof:', typeof process.env.REACT_APP_API_BASE_URL);
-console.log('================================================');
 
-let API_BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:5001';
+let API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001';
 
 console.log('📍 Final API_BASE_URL:', API_BASE_URL);
 
@@ -37,7 +31,6 @@ const findURL = async () => {
         }
     }
 }
-
 
 const apiCall = async (endpoint, options = {}) => {
     try {
@@ -107,7 +100,7 @@ const awsResourceApi = {
         }
 
         // Pass the endpoint and mapped credentials to apiCall(), then wait and return its repsonse
-        const response = await apiCall(API_BASE_URL, '/configure', {
+        const response = await apiCall('/configure', {
             method: 'POST',
             body: JSON.stringify({
                 access_key,
@@ -130,47 +123,47 @@ const awsResourceApi = {
 
     // get current region
     getAWSRegion: async () => {
-        return await apiCall(API_BASE_URL, '/region')
+        return await apiCall('/region')
     },
 
     // get AWS Cost
     getAWSCosts: async () => {
-        return await apiCall(API_BASE_URL, '/costs')
+        return await apiCall('/costs')
     },
 
     // Get EC2 instances
     getRDS: async () => {
-        return await apiCall(API_BASE_URL, '/rds');
+        return await apiCall('/rds');
     },
 
     // Get RDS
     getS3: async () => {
-        return await apiCall(API_BASE_URL, '/s3');
+        return await apiCall('/s3');
     },
 
     // Get Lambda
     getLambda: async () => {
-        return await apiCall(API_BASE_URL, '/lambda');
+        return await apiCall('/lambda');
     },
 
     // Get load balancers
     getELB: async () => {
-        return await apiCall(API_BASE_URL, '/elb');
+        return await apiCall('/elb');
     },
 
     // Get EC2
     getEC2: async () => {
-        return await apiCall(API_BASE_URL, '/ec2');
+        return await apiCall('/ec2');
     },
 
     // Get EBS
     getEBS: async () => {
-        return await apiCall(API_BASE_URL, '/ebs');
+        return await apiCall('/ebs');
     },
 
     // Get Elastic IPs
     getEIP: async () => {
-        return await apiCall(API_BASE_URL, '/eip');
+        return await apiCall('/eip');
     }
 }
 export { findURL };
